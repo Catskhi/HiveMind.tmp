@@ -18,3 +18,7 @@ spring:
 
   flyway:
     enabled: true
+
+hivemind:
+  security:
+    secret: ${JWT_SECRET}
