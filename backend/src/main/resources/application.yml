@@ -15,6 +15,15 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
 
   flyway:
     enabled: true
+
+hivemind:
+  security:
+    secret: ${JWT_SECRET}
