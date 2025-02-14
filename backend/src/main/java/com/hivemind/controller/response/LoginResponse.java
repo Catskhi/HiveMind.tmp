@@ -1,4 +1,9 @@
 package com.hivemind.controller.response;
 
-public record LoginResponse(String token) {
+import lombok.Builder;
+
+import java.util.Optional;
+
+@Builder
+public record LoginResponse(String token, String publicKey, Optional<String> privateKey) {
 }
