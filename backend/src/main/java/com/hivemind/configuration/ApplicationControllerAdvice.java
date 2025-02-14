@@ -2,6 +2,7 @@ package com.hivemind.configuration;
 
 import com.hivemind.exception.DuplicateEntryException;
 import com.hivemind.exception.InvalidUsernameOrPasswordException;
+import com.hivemind.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,6 +25,12 @@ public class ApplicationControllerAdvice {
     @ExceptionHandler(InvalidUsernameOrPasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleNotFoundException(InvalidUsernameOrPasswordException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleNotFoundException(UserNotFoundException exception) {
         return exception.getMessage();
     }
 
