@@ -1,10 +1,7 @@
 package com.hivemind.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,7 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,6 +28,15 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(name = "public_key", nullable = false, unique = true, columnDefinition = "TEXT")
+    private String publicKey;
+
+    @Transient
+    private String tempPrivateKey;
+
+    @Column(name = "encrypted_private_key", columnDefinition = "TEXT")
+    private String privateKey;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

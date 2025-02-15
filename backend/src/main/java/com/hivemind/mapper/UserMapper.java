@@ -16,11 +16,23 @@ public class UserMapper {
                 .build();
     }
 
+    public static UserResponse toRegisterResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .publicKey(user.getPublicKey())
+                .privateKey(user.getTempPrivateKey())
+                .build();
+    }
+
     public static UserResponse toUserResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .publicKey(user.getPublicKey())
+                .privateKey(user.getPrivateKey())
                 .build();
     }
 }
