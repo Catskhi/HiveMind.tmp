@@ -1,13 +1,12 @@
 'use client'
 
-import BackText from '@/components/style/BackText';
-import WhiteText from '@/components/style/WhiteText';
 import Title from '@/components/title';
 import { Client } from '@stomp/stompjs';
 import { useEffect } from 'react';
+import { testFont, webplusFont } from './styles/font';
+import Link from 'next/link';
 
 export default function Home() {
-
   
   useEffect(() => {
     const onConnected = () => {
@@ -38,103 +37,26 @@ export default function Home() {
     }
   }, [])
 
-
   return (
-    <div>
-      <div className=''><br/>
-        <Title className="text-[#C0C0C0] overflow-x-hidden pl-2">
+    <div className='mt-10'>
+      <div className='w-fit m-auto'>
+        <div className='flex flex-col justify-start mb-3 gap-y-3 xl:text-base text-sm'>
+          <div>$ WELCOME TO HIVE_MIND.TMP</div>
+          <Link href="/login" className='hover:text-[#C0C0C0]'>
+            {'>'} Login to hive
+          </Link>
           <div>
-            <BackText>#</BackText><WhiteText>@</WhiteText>       <br/>
-            <BackText/><WhiteText>██</WhiteText>  <BackText/><WhiteText>██▌</WhiteText><br/>
-            <BackText/>██▌ <BackText/>█▀ <br/>
-            <BackText/>██▌ <BackText/>█# <br/>
-            <BackText/>██████% <br/>
-            <BackText/>▓█▌ <BackText/>█▓ <br/>
-            <BackText/>▒█▌ <BackText/>█▓ <br/>
-            <BackText/>██  <BackText/>▒█ <br/>
-            <BackText/>▓█  <BackText/>▓█ <br/>
-            <BackText>%</BackText>▒   <BackText/>▒  <br/>
-            <BackText>%</BackText>@     ░ <br/>
+          <Link href="/register" className='hover:text-[#C0C0C0]'>
+            {'>'} New user? create account
+          </Link>
           </div>
-          <div><br/>
-            <BackText>%</BackText><WhiteText>█#</WhiteText><br/>
-            <BackText>░██</BackText><br/>
-            <BackText/>██<br/>
-            <BackText/>██<br/>
-            <BackText/>██<br/>
-            <BackText/>█▒<br/>
-            <BackText/>▓█<br/>
-            <BackText/>▓▓<br/>
-            <BackText/>  <br/>
-            <BackText/>
+        </div>
+        {/* <div className='flex flex-col items-center justify-center xl:text-[0.8vw] text-[2.2vw]'>
+          <div className='hover:text-[#C0C0C0] cursor-pointer'>
+          {'█▓▒░'} CONNECT TO HIVE {'░▒▓█'}
           </div>
-          <div><br/>
-            <BackText/><WhiteText>██</WhiteText>      <BackText/><WhiteText>█▌</WhiteText><br/>
-            <BackText/>██<WhiteText>█</WhiteText>   <BackText>░░</BackText><WhiteText>██▌</WhiteText><br/>
-            <BackText>░░</BackText>███  <BackText/>▒██<WhiteText>▌</WhiteText><br/> <BackText>░0</BackText>▓██ ░██  <br/>  <BackText>1░</BackText>██▄▒█▀<br/>   <BackText/><BackText/>▓███<br/>    <BackText/>███#<br/>     <BackText/>%█<br/>     <BackText/>%%<br/>      <BackText/>
-          </div>
-          <div><br/>
-            <BackText/><WhiteText>███████</WhiteText><br/>
-            <BackText/>▀█<WhiteText>█</WhiteText>   <br/>
-            <BackText/>██     <br/>
-            <BackText/>▒▓█████<br/>
-            <BackText>0</BackText>██<WhiteText>▀</WhiteText>    <br/>
-            <BackText/>██     <br/>
-            <BackText/>▓█▄    <br/>
-            <BackText/>▒▒██▓██<br/>
-            <BackText/>%    <WhiteText>▀</WhiteText><br/>
-          </div>
-          <div><br/>
-          <BackText/><WhiteText>██▌</WhiteText>  <BackText/><WhiteText>██</WhiteText><br/>
-          <BackText/>███ <BackText/>██<WhiteText>█</WhiteText><br/>
-          <BackText/>██▀██<BackText/>█@<br/>
-          <BackText/>█▌   <BackText/>██<br/>
-          <BackText/>██   <BackText/>██<br/>
-          <BackText/>█@   <BackText/>▒█<br/>
-          <BackText/>#▓▒  <BackText/>█▒<br/>
-          <BackText/>▒▒    <BackText/>▒<br/>
-          <BackText/>0
-          </div>
-          <div><br/>
-            <BackText>#</BackText><WhiteText>*█</WhiteText><br/>
-            <BackText>░██</BackText><br/>
-            <BackText/>██<br/>
-            <BackText/>██<br/>
-            <BackText/>██<br/>
-            <BackText/>█*<br/>
-            <BackText/>▓█<br/>
-            <BackText/>▓▓<br/>
-            <BackText/>  <br/>
-            <BackText/>
-          </div>
-          <div>
-          <BackText>@</BackText><WhiteText>▄</WhiteText>        <br/>
-          <BackText/><WhiteText>█▄</WhiteText>     <WhiteText>█▌</WhiteText><br/>
-          <BackText/>██<WhiteText>▌</WhiteText>   ▄█<WhiteText>▌</WhiteText><br/>
-          <BackText/>▓█<WhiteText>█</WhiteText>  <BackText>0</BackText>█▌<br/>
-          <BackText>#</BackText>████ <BackText/>██▌<br/>
-          <BackText/>▓█ ██<BackText/>██<WhiteText>▌</WhiteText><br/>
-          <BackText/>██  ████ <br/>
-          <BackText/>█1  <BackText/>▓▒█ <br/>
-          <BackText/>▓█   <BackText/>█% <br/>
-          <BackText/>█▀   <BackText/>▒▀ <br/>
-          <BackText/>    <BackText>░░</BackText>  <br/>
-          </div>
-          <div><br/>
-          <BackText>#</BackText>█<WhiteText>███▌</WhiteText>  <br/>
-          <BackText/>██▀█<WhiteText>██</WhiteText> <br/>
-          <BackText/>██ <BackText/>██<WhiteText>▌</WhiteText><br/>
-          <BackText>@</BackText>█▓  <BackText>%</BackText>█▌<br/>
-          <BackText/>██  <BackText/>█▌<br/>
-          <BackText/>██ <BackText/>██<WhiteText>▌</WhiteText><br/>
-          <BackText/>▓██▒██ <br/>
-          <BackText/>█▒█▀▀  <br/>
-          <BackText>#░░</BackText>    <br/><BackText/>
-          </div>
-        </Title>
+        </div> */}
       </div>
-      <br/>
-      <h1 className='pl-5'>Hi, WebPlus font here!</h1>
     </div>
   );
 }
