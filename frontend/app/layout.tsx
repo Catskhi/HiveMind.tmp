@@ -6,7 +6,8 @@ import MatrixRain from "@/components/background/MatrixRain";
 
 export const metadata: Metadata = {
   title:"Hivemind",
-  description: "Secure communication"
+  description: "Secure communication",
+  icons: "/images/bee-pixel-sprite.svg"
 }
 
 export default function RootLayout({
@@ -17,7 +18,6 @@ export default function RootLayout({
   return (
     <html className={webplusFont.className}>
       <head>
-        <link rel="icon" href="../public/images/bee-pixel-sprite.svg" sizes="any" type="image/svg+xml" />
       </head>
       <body className="dark" suppressHydrationWarning={true}>
         <header>

@@ -1,41 +1,39 @@
 'use client'
 
-import Title from '@/components/title';
 import { Client } from '@stomp/stompjs';
 import { useEffect } from 'react';
-import { testFont, webplusFont } from './styles/font';
 import Link from 'next/link';
 
 export default function Home() {
   
-  useEffect(() => {
-    const onConnected = () => {
-      console.log('Connected!')
-      client.subscribe("/topic/greetings", (msg) => {
-        if (msg) {
-          const jsonBody = JSON.parse(msg.body)
-          console.log("JSON BODY: ")
-          console.log(jsonBody)
-        }
-      })
-    }
+  // useEffect(() => {
+  //   const onConnected = () => {
+  //     console.log('Connected!')
+  //     client.subscribe("/topic/greetings", (msg) => {
+  //       if (msg) {
+  //         const jsonBody = JSON.parse(msg.body)
+  //         console.log("JSON BODY: ")
+  //         console.log(jsonBody)
+  //       }
+  //     })
+  //   }
 
-    const onDisconnected = () => {
-      console.log("Disconnected!")
-    }
+  //   const onDisconnected = () => {
+  //     console.log("Disconnected!")
+  //   }
 
-    const client = new Client({
-      brokerURL: 'ws://localhost:8080/ws',
-      onConnect: onConnected,
-      onDisconnect: onDisconnected
-    })
+  //   const client = new Client({
+  //     brokerURL: 'ws://localhost:8080/ws',
+  //     onConnect: onConnected,
+  //     onDisconnect: onDisconnected
+  //   })
 
-    client.activate()
+  //   client.activate()
 
-    return () => {
-      client.forceDisconnect()
-    }
-  }, [])
+  //   return () => {
+  //     client.forceDisconnect()
+  //   }
+  // }, [])
 
   return (
     <div className='mt-10'>
