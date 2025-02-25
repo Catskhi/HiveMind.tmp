@@ -18,7 +18,7 @@ const generateHexLine = (length: number, character?: string) => {
     return getRandomRepeat(length)
 }
 
-const generateHex = (size: number, line_size: number, character?: string): string => {
+export const generateHex = (size: number, line_size: number, character?: string): string => {
     let hexagon: string = ""
     for (let i = 0; i < size; i++) {
         let hashes = generateHexLine(line_size, character)
