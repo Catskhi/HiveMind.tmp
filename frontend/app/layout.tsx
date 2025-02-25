@@ -1,15 +1,13 @@
 import { Metadata} from "next";
-import localFont from 'next/font/local';
 import "./globals.css"
+import { webplusFont } from "./styles/font";
+import Title from "@/components/title";
+import MatrixRain from "@/components/background/MatrixRain";
 
 export const metadata: Metadata = {
   title:"Hivemind",
   description: "Secure communication"
 }
-
-const webplusFont = localFont({
-  src: '../public/fonts/Ac437_ToshibaSat_8x14.ttf'
-})
 
 export default function RootLayout({
   children,
@@ -19,9 +17,19 @@ export default function RootLayout({
   return (
     <html className={webplusFont.className}>
       <head>
+        <link rel="icon" href="../public/images/bee-pixel-sprite.svg" sizes="any" type="image/svg+xml" />
       </head>
       <body className="dark" suppressHydrationWarning={true}>
-        {children}
+        <header>
+          <div className='flex justify-center mt-5 items-center'><br/>
+            <Title/>
+            <div></div>
+          </div>
+        </header>
+        <main>
+          {children}
+          <MatrixRain />
+        </main>
       </body>
     </html>
   )
