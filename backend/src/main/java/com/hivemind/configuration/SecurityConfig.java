@@ -40,7 +40,8 @@ public class SecurityConfig{
                         .requestMatchers("/gs-guide-websocket").permitAll()
                         .requestMatchers("/index.html", "/app.js", "main.css").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/user/**").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

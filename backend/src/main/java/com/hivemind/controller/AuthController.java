@@ -54,4 +54,12 @@ public class AuthController {
             throw new InvalidUsernameOrPasswordException("Invalid username or password.");
         }
     }
+    @PutMapping("/user/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+        User updatedUser = UserMapper.toUser(request);
+
+        return userService.updateById(updatedUser, id)
+                .map(user -> ResponseEntity.ok(UserMapper.toUserResponse(user)))
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

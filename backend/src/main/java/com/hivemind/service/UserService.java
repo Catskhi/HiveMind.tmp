@@ -50,16 +50,24 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found."));
     }
 
-    public Optional<User> updateById(User updatedUser, Long id) {
-        Optional<User> userToUpdate = userRepository.findById(id);
+    public Optional<User> updateById(User updatedUser, Long authenticatedUserId) {
+        Optional<User> userToUpdate = userRepository.findById(authenticatedUserId);
         if (userToUpdate.isPresent()) {
             User user = userToUpdate.get();
+            // Impede alteração de outro usuário
+            if (!authenticatedUserId.equals(updatedUser.getId())) {
+                throw new SecurityException("You cannot modify another user's data.");
+            }
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
-            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            // Se a senha for enviada, criptografa e salva
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
             userRepository.save(user);
             return Optional.of(user);
-        } else {
+        }
+        else {
             return Optional.empty();
         }
     }

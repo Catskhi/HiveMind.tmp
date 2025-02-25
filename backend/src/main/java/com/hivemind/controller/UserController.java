@@ -1,15 +1,19 @@
 package com.hivemind.controller;
 
 import com.hivemind.configuration.JWTUserData;
+import com.hivemind.controller.request.LoginRequest;
 import com.hivemind.controller.request.UserRequest;
+import com.hivemind.controller.response.LoginResponse;
 import com.hivemind.controller.response.UserResponse;
 import com.hivemind.entity.User;
 import com.hivemind.mapper.UserMapper;
+import com.hivemind.service.AuthService;
 import com.hivemind.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -37,7 +41,6 @@ public class UserController {
                 .map(user -> ResponseEntity.ok(UserMapper.toUserResponse(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
-
     @DeleteMapping
     public ResponseEntity<String> delete() {
         JWTUserData authentication = (JWTUserData) SecurityContextHolder.getContext()
