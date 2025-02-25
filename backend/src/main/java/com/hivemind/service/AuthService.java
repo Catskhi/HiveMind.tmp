@@ -14,7 +14,7 @@ public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String gmail) throws UsernameNotFoundException {
-        return userRepository.findUserByEmail(gmail).orElseThrow(() -> new UsernameNotFoundException("Invalid username or password."));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findUserByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Invalid username or password."));
     }
 }
