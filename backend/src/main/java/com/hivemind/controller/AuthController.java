@@ -4,10 +4,11 @@ import com.hivemind.configuration.TokenService;
 import com.hivemind.controller.request.LoginRequest;
 import com.hivemind.controller.request.UserRequest;
 import com.hivemind.controller.response.LoginResponse;
+import com.hivemind.controller.response.RegisterResponse;
 import com.hivemind.controller.response.UserResponse;
 import com.hivemind.entity.User;
 import com.hivemind.exception.InvalidUsernameOrPasswordException;
-import com.hivemind.mapper.LoginMapper;
+import com.hivemind.mapper.AuthMapper;
 import com.hivemind.mapper.UserMapper;
 import com.hivemind.service.UserService;
 import jakarta.validation.Valid;
@@ -35,9 +36,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody UserRequest request) {
         User savedUser = userService.save(UserMapper.toUser(request));
-        return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toRegisterResponse(savedUser));
+        String token = tokenService.generateToken(savedUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(AuthMapper.toRegisterResponse(savedUser, token));
     }
 
     @PostMapping("/login")
@@ -49,7 +52,7 @@ public class AuthController {
             User user = (User) authentication.getPrincipal();
             String token = tokenService.generateToken(user);
 
-            return ResponseEntity.ok(LoginMapper.toLoginResponse(token, user));
+            return ResponseEntity.ok(AuthMapper.toLoginResponse(token, user));
         } catch (BadCredentialsException exception) {
             throw new InvalidUsernameOrPasswordException("Invalid username or password.");
         }
