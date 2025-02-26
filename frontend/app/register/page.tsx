@@ -11,14 +11,25 @@ export default function Register() {
     const [name, setUsername] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    const [errorMessage, setErrorMessage] = useState<string>("")
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setErrorMessage("")
         try {
             const response = await axios.post('http://localhost:8080/auth/register', {name, email, password})
             console.log(response)
         } catch (error) {
-            console.error("An error occurred:", error.response ? error.response.data : error.message);
+            if (error.response.data.name) {
+                setErrorMessage(error.response.data.name)
+            }
+            if (error.response.data.email) {
+                setErrorMessage(error.response.data.email)
+            }
+            if (error.response.data.password) {
+                setErrorMessage(error.response.data.password)
+            }
+            setErrorMessage(error.response.data.message)
         }
     }
 
@@ -48,6 +59,12 @@ export default function Register() {
                         placeholder="your passw0rd"
                         onChange={(e) => setPassword(e.target.value)} />
                     </div>
+                    {errorMessage && (
+                        <div className="mt-3">
+                            [ <span className="text-red-500">FAIL</span> ]
+                            <span className="text-red-500"> {errorMessage}</span>
+                        </div>
+                    )}
                     <BlockedButton type="submit" className="mt-5 w-full">CONNECT TO HIVE</BlockedButton>
                 </form>
                 <Link href="/">

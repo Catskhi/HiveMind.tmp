@@ -9,9 +9,11 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    const [errorMessage, setErrorMessage] = useState<string>("")
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setErrorMessage("")
         try {
             const response = await axios.post("http://localhost:8080/auth/login", {
                 email,
@@ -19,7 +21,13 @@ export default function LoginPage() {
             })
             console.log(response)
         } catch (error) {
-            console.error("An error occurred:", error.response ? error.response.data : error.message);
+            if (error.response.data.email) {
+                setErrorMessage(error.response.data.email)
+            }
+            if (error.response.data.password) {
+                setErrorMessage(error.response.data.password)
+            }
+            setErrorMessage(error.response.data.message)
         }
     }
 
@@ -43,6 +51,12 @@ export default function LoginPage() {
                         placeholder="your passw0rd"
                         onChange={(e) => setPassword(e.target.value)} />
                     </div>
+                    {errorMessage && (
+                        <div className="mt-3">
+                            [ <span className="text-red-500">FAIL</span> ]
+                            <span className="text-red-500"> {errorMessage}</span>
+                        </div>
+                    )}
                     <div className="w-full flex items-center justify-center">
                         <BlockedButton type="submit" className="mt-5">CONNECT TO HIVE</BlockedButton>
                     </div>
