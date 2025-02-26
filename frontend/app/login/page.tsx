@@ -13,7 +13,7 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            const response = axios.post("http://localhost:8080/auth/login", {
+            const response = await axios.post("http://localhost:8080/auth/login", {
                 email,
                 password
             })
