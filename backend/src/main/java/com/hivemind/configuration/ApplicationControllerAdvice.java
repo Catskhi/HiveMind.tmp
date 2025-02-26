@@ -1,5 +1,6 @@
 package com.hivemind.configuration;
 
+import com.hivemind.controller.response.ErrorResponse;
 import com.hivemind.exception.DuplicateEntryException;
 import com.hivemind.exception.InvalidUsernameOrPasswordException;
 import com.hivemind.exception.UserNotFoundException;
@@ -18,20 +19,20 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(DuplicateEntryException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String alreadyExistsException(DuplicateEntryException exception) {
-        return exception.getMessage();
+    public ErrorResponse alreadyExistsException(DuplicateEntryException exception) {
+        return new ErrorResponse("Duplicated entry", exception.getMessage());
     }
 
     @ExceptionHandler(InvalidUsernameOrPasswordException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleNotFoundException(InvalidUsernameOrPasswordException exception) {
-        return exception.getMessage();
+    public ErrorResponse handleInvalidUsernameOrPasswordException(InvalidUsernameOrPasswordException exception) {
+        return new ErrorResponse("Invalid Credentials", exception.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleNotFoundException(UserNotFoundException exception) {
-        return exception.getMessage();
+    public ErrorResponse handleUserNotFound(UserNotFoundException exception) {
+        return new ErrorResponse("User not found", exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
