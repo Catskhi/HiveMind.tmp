@@ -27,4 +27,4 @@ spring:
 hivemind:
   security:
     secret: ${JWT_SECRET}
-  allowed-origins: ${ALLOWED_ORIGINS}
+    allowed-origins: ${ALLOWED_ORIGINS}
