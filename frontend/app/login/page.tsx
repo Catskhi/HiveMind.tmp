@@ -19,6 +19,7 @@ export default function LoginPage() {
                 email,
                 password
             })
+            sessionStorage.setItem("token", response.data.token)
             console.log(response)
         } catch (error) {
             if (error.response.data.email) {
