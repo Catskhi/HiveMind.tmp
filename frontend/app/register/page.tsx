@@ -18,6 +18,7 @@ export default function Register() {
         setErrorMessage("")
         try {
             const response = await axios.post('http://localhost:8080/auth/register', {name, email, password})
+            sessionStorage.setItem("token", response.data.token)
             console.log(response)
         } catch (error) {
             if (error.response.data.name) {
