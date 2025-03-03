@@ -1,6 +1,7 @@
 "use client"
 import BlockedButton from "@/components/BlockedButton";
 import FormTextInput from "@/components/forms/FormTextInput";
+import TextGlitchEffect from "@/components/style/TextGlitchEffect";
 import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
@@ -21,11 +22,16 @@ export default function LoginPage() {
             })
             console.log(response)
         } catch (error) {
+            console.log(error.response)
             if (error.response.data.email) {
+                console.log(error.response.data.email)
                 setErrorMessage(error.response.data.email)
+                return
             }
             if (error.response.data.password) {
+                console.log(error.response.data.password)
                 setErrorMessage(error.response.data.password)
+                return
             }
             setErrorMessage(error.response.data.message)
         }
@@ -52,17 +58,21 @@ export default function LoginPage() {
                         onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     {errorMessage && (
-                        <div className="mt-3">
-                            [ <span className="text-red-500">FAIL</span> ]
+                        <div className="mt-3 ">
+                            [ <span className="text-red-500 ">FAIL</span> ]
                             <span className="text-red-500"> {errorMessage}</span>
                         </div>
                     )}
                     <div className="w-full flex items-center justify-center">
-                        <BlockedButton type="submit" className="mt-5">CONNECT TO HIVE</BlockedButton>
+                        <BlockedButton type="submit" className="mt-5">
+                            <TextGlitchEffect text="CONNECT TO HIVE" />
+                        </BlockedButton>
                     </div>
                 </form>
                 <Link href="/" className="self-center">
-                    <BlockedButton className="mt-5">BACK</BlockedButton>
+                    <BlockedButton className="mt-5">
+                        <TextGlitchEffect text="BACK" duration={100} interval={70} />
+                    </BlockedButton>
                 </Link>
                 <div>
                     
