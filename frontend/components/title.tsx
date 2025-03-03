@@ -92,7 +92,7 @@ export default function Title({className}: TitleProps) {
             <BackText/>█1  <BackText/>▓▒█ <br/>
             <BackText/>▓█   <BackText/>█% <br/>
             <BackText/>█▀   <BackText/>▒▀ <br/>
-            <BackText/>    <BackText>░░</BackText>  <br/>
+            <BackText/>    <BackText> ░░</BackText>  <br/>
           </div>
           <div><br/>
             <BackText>#</BackText>█<WhiteText>███▌</WhiteText>  <br/>
