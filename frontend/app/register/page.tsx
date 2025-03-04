@@ -2,6 +2,7 @@
 
 import BlockedButton from "@/components/BlockedButton";
 import FormTextInput from "@/components/forms/FormTextInput";
+import TextGlitchEffect from "@/components/style/TextGlitchEffect";
 import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,18 +17,23 @@ export default function Register() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrorMessage("")
+        const baseUrl = process.env.BACKEND_BASE_URL
         try {
-            const response = await axios.post('http://localhost:8080/auth/register', {name, email, password})
+            const response = await axios.post(baseUrl + '/auth/register', {name, email, password})
+            sessionStorage.setItem("token", response.data.token)
             console.log(response)
         } catch (error) {
             if (error.response.data.name) {
                 setErrorMessage(error.response.data.name)
+                return
             }
             if (error.response.data.email) {
                 setErrorMessage(error.response.data.email)
+                return
             }
             if (error.response.data.password) {
                 setErrorMessage(error.response.data.password)
+                return
             }
             setErrorMessage(error.response.data.message)
         }
@@ -65,10 +71,14 @@ export default function Register() {
                             <span className="text-red-500"> {errorMessage}</span>
                         </div>
                     )}
-                    <BlockedButton type="submit" className="mt-5 w-full">CONNECT TO HIVE</BlockedButton>
+                    <BlockedButton type="submit" className="mt-5 w-full">
+                        <TextGlitchEffect text="CONNECT TO HIVE" />
+                    </BlockedButton>
                 </form>
                 <Link href="/">
-                    <BlockedButton className="mt-5 w-full">BACK</BlockedButton>
+                    <BlockedButton className="mt-5 w-full">
+                        <TextGlitchEffect text="BACK" duration={70} interval={25} />
+                    </BlockedButton>
                 </Link>
             </div>
         </div>

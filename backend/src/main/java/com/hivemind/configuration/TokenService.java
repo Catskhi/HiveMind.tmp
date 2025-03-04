@@ -6,8 +6,10 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hivemind.entity.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -24,10 +26,20 @@ public class TokenService {
                 .withSubject(user.getEmail())
                 .withClaim("id", user.getId())
                 .withClaim("name", user.getName())
-                .withExpiresAt(Instant.now().plusSeconds(86400))
+                .withExpiresAt(Instant.now().plus(Duration.ofDays(1)))
                 .withIssuedAt(Instant.now())
                 .withIssuer("API HiveMind")
                 .sign(algorithm);
+    }
+
+    public ResponseCookie createJwtCookie(String token, boolean isProduction) {
+        return ResponseCookie.from("JWT_TOKEN", token)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(Duration.ofDays(1))
+                .sameSite("Lax")
+                .secure(isProduction)
+                .build();
     }
 
     public Optional<JWTUserData> verifyToken(String token) {
