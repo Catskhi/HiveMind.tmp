@@ -11,22 +11,20 @@ import java.util.Optional;
 @UtilityClass
 public class AuthMapper {
 
-    public LoginResponse toLoginResponse(String token, User user) {
+    public LoginResponse toLoginResponse(User user) {
         return LoginResponse.builder()
-                .token(token)
                 .publicKey(user.getPublicKey())
                 .privateKey(Optional.ofNullable(user.getPrivateKey()))
                 .build();
     }
 
-    public static RegisterResponse toRegisterResponse(User user, String token) {
+    public static RegisterResponse toRegisterResponse(User user) {
         return RegisterResponse.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .publicKey(user.getPublicKey())
                 .privateKey(user.getTempPrivateKey())
-                .token(token)
                 .build();
     }
 
