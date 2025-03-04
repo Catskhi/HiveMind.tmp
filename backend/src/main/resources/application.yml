@@ -1,6 +1,8 @@
 spring:
   application:
     name: hivemind
+  profiles:
+    active: dev
 
   output:
     ansi:
