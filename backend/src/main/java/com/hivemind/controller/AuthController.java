@@ -9,6 +9,7 @@ import com.hivemind.entity.User;
 import com.hivemind.exception.InvalidUsernameOrPasswordException;
 import com.hivemind.mapper.AuthMapper;
 import com.hivemind.mapper.UserMapper;
+import com.hivemind.service.EnvironmentService;
 import com.hivemind.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ public class AuthController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final EnvironmentService environmentService;
 
     @GetMapping("/verify")
     public ResponseEntity<String> verifyLogin() {
@@ -41,13 +43,7 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody UserRequest request, HttpServletResponse response) {
         User savedUser = userService.save(UserMapper.toUser(request));
         String token = tokenService.generateToken(savedUser);
-
-        ResponseCookie cookie = ResponseCookie.from("JWT_TOKEN", token)
-                .httpOnly(true)
-                .path("/")
-                .maxAge(24 * 60 * 60)
-                .sameSite("Lax")
-                .build();
+        ResponseCookie cookie = tokenService.createJwtCookie(token, environmentService.isProductionEnvironment());
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(AuthMapper.toRegisterResponse(savedUser));
@@ -62,12 +58,7 @@ public class AuthController {
             User user = (User) authentication.getPrincipal();
             String token = tokenService.generateToken(user);
 
-            ResponseCookie cookie = ResponseCookie.from("JWT_TOKEN", token)
-                    .httpOnly(true)
-                    .path("/")
-                    .maxAge(24 * 60 * 60)
-                    .sameSite("Lax")
-                    .build();
+            ResponseCookie cookie = tokenService.createJwtCookie(token, environmentService.isProductionEnvironment());
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             return ResponseEntity.ok(AuthMapper.toLoginResponse(user));
