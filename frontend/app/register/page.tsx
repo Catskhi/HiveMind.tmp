@@ -17,8 +17,9 @@ export default function Register() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrorMessage("")
+        const baseUrl = process.env.BACKEND_BASE_URL
         try {
-            const response = await axios.post('http://localhost:8080/auth/register', {name, email, password})
+            const response = await axios.post(baseUrl + '/auth/register', {name, email, password})
             sessionStorage.setItem("token", response.data.token)
             console.log(response)
         } catch (error) {
