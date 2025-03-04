@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hivemind.entity.User;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -28,6 +29,16 @@ public class TokenService {
                 .withIssuedAt(Instant.now())
                 .withIssuer("API HiveMind")
                 .sign(algorithm);
+    }
+
+    public ResponseCookie createJwtCookie(String token, boolean isProduction) {
+        return ResponseCookie.from("JWT_TOKEN", token)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(24 * 60 * 60)
+                .sameSite("Lax")
+                .secure(isProduction)
+                .build();
     }
 
     public Optional<JWTUserData> verifyToken(String token) {
