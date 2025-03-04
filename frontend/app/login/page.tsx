@@ -15,15 +15,16 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrorMessage("")
+        const baseUrl = process.env.BACKEND_BASE_URL
         try {
-            const response = await axios.post("http://localhost:8080/auth/login", {
-                email,
-                password
-            })
+            const response = await axios.post(baseUrl + "/auth/login",
+                { email, password },
+                { withCredentials: true }
+            );
             sessionStorage.setItem("token", response.data.token)
             console.log(response)
         } catch (error) {
-            console.log(error.response)
+            console.log(error)
             if (error.response.data.email) {
                 console.log(error.response.data.email)
                 setErrorMessage(error.response.data.email)
