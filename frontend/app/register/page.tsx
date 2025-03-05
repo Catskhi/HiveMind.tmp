@@ -5,6 +5,7 @@ import FormTextInput from "@/components/forms/FormTextInput";
 import TextGlitchEffect from "@/components/style/TextGlitchEffect";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Register() {
@@ -13,15 +14,16 @@ export default function Register() {
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [errorMessage, setErrorMessage] = useState<string>("")
+    const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErrorMessage("")
-        const baseUrl = process.env.BACKEND_BASE_URL
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
         try {
             const response = await axios.post(baseUrl + '/auth/register', {name, email, password})
             sessionStorage.setItem("token", response.data.token)
-            console.log(response)
+            router.push('/app')
         } catch (error) {
             if (error.response.data.name) {
                 setErrorMessage(error.response.data.name)
