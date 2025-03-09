@@ -1,7 +1,6 @@
 import { Metadata} from "next";
 import "./globals.css"
 import { webplusFont } from "./styles/font";
-import Title from "@/components/title";
 import MatrixRain from "@/components/background/MatrixRain";
 
 export const metadata: Metadata = {
@@ -20,16 +19,8 @@ export default function RootLayout({
       <head>
       </head>
       <body className="dark" suppressHydrationWarning={true}>
-        <header>
-          <div className='flex justify-center mt-5 items-center'><br/>
-            <Title/>
-            <div></div>
-          </div>
-        </header>
-        <main>
-          {children}
-          <MatrixRain />
-        </main>
+        <MatrixRain />
+        {children}
       </body>
     </html>
   )
