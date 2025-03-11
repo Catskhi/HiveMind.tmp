@@ -1,3 +1,4 @@
+import AuthProvider from "@/components/app/auth/AuthProvider"
 import Chat from "@/components/app/Chat"
 import ContactsSidebar from "@/components/app/ContactsSidebar"
 import TextGlitchEffect from "@/components/style/TextGlitchEffect"
@@ -20,8 +21,10 @@ export default function app() {
                 </div>
             </div>
             <div className="flex-1 flex w-full">
-                <ContactsSidebar className="" />
-                <Chat />
+                <AuthProvider>
+                    <ContactsSidebar className="" />
+                    <Chat />
+                </AuthProvider>
             </div>
         </main>
     </div>
