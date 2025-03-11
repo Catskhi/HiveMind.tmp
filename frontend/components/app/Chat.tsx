@@ -18,8 +18,10 @@ export default async function ChatPage() {
     return (
         <ChatProvider>
             <ChatTemplate>
-                <ChatMessages />
-                <ChatInput username={userData.name} />
+              <div className="flex flex-col flex-1 h-full">
+                  <ChatMessages />
+                  <ChatInput username={userData.name} />
+              </div>
             </ChatTemplate>
         </ChatProvider>
     );
