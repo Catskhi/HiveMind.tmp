@@ -1,6 +1,9 @@
 import { Metadata} from "next";
 import "../globals.css"
-import { ibmEgaFont, toshibaSatFont } from "../styles/font";
+import { toshibaSatFont } from "../styles/font";
+import ChatHeader from "@/components/app/ui/ChatHeader";
+import ContactsSidebar from "@/components/app/ContactsSidebar";
+import AuthProvider from "@/components/app/auth/AuthProvider";
 
 export const metadata: Metadata = {
   title:"Hivemind",
@@ -14,10 +17,18 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <>
-        <main className={toshibaSatFont.className}>
-            {children}
+    <div className="flex flex-col h-screen bg-[rgb(0,0,0,0.45)]">
+        <ChatHeader />
+        <main className={toshibaSatFont.className + ' flex-1 min-h-0'}>
+          <div className="w-full h-full flex">
+            <div className="flex-1 flex w-full min-h-0">
+              <AuthProvider>
+                <ContactsSidebar className="min-h-0" />
+                {children}
+              </AuthProvider>
+            </div>
+          </div>
         </main>
-    </>
+    </div>
   )
 }
