@@ -1,7 +1,6 @@
 "use client";
 
 import FormTextInput from "../forms/FormTextInput";
-import TextGlitchEffect from "../style/TextGlitchEffect";
 
 type Contact = {
   id: string;
