@@ -14,16 +14,21 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
     private final TokenService tokenService;
+    private final CustomHandshakeInterceptor customHandshakeInterceptor;
+    private final CustomHandshakeHandler customHandshakeHandler;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOrigins("http://localhost:3000");
+        registry.addEndpoint("/ws")
+                .setHandshakeHandler(customHandshakeHandler)
+                .addInterceptors(customHandshakeInterceptor)
+                .setAllowedOrigins("http://localhost:3000");
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.setApplicationDestinationPrefixes("/app");
-        config.enableSimpleBroker("/topic", "/queue", "/user");
+        config.enableSimpleBroker("/topic", "/queue");
         config.setUserDestinationPrefix("/user");
     }
 }
