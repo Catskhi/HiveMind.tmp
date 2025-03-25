@@ -16,13 +16,13 @@ export default function ChatMessage({username, message, timestamp}: Props) {
             hour: '2-digit',
             minute: '2-digit',
             hour12: false
-        })   
+        }).replace(',', '')  
     }
  
     return (
         <div className={ibmEgaFont.className}>
             <span className="text-cyan-400 text-sm">[{formatTimeStamp()}] </span>
-            <span className="text-lime-300 text-sm">@{username} </span> <br/>
+            <span className="text-lime-300">@{username} </span> <br/>
             <span className="select-none">{'> '}</span><span className="text-white">{message}</span>
         </div>
     )
