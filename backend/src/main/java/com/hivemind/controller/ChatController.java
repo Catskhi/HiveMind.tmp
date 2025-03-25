@@ -27,7 +27,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     private final UserService userService;
     private final UserRepository userRepository;
 
@@ -37,33 +39,18 @@ public class ChatController {
     @MessageMapping("/globalChat")
     @SendTo("/topic/globalChat")
     public GroupChatMessage sendMessageToGlobalChat(@Payload String message, Principal principal) throws Exception {
-        JWTUserData user = (JWTUserData) ((Authentication) principal).getPrincipal();
         String timestamp = LocalDateTime.now()
                                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        return new GroupChatMessage(user.name(), message, timestamp);
+        return new GroupChatMessage(principal.getName(), message, timestamp);
     }
 
-    @MessageMapping("/privateMessage")
+    @MessageMapping("/chat")
     public void sendPrivateMessage(@Payload PrivateMessage message, Principal principal) {
-        System.out.println("MESSAGE ================");
-        System.out.println(message);
-        System.out.println("Connected users: " + userRegistry.getUsers());
-        JWTUserData sender = (JWTUserData)((Authentication)principal).getPrincipal();
-        String senderName = sender.name();
-        String recipientName = message.recipient();
-        System.out.println("Sender: " + senderName + ", Recipient: " + recipientName);
-        if (senderName.equals(recipientName)) {
-            throw new RuntimeException("Cannot send message to yourself.");
-        }
-        Optional<User> recipientUser = userService.findByName(recipientName);
-        if (recipientUser.isEmpty()) {
-            throw new UserNotFoundException("Recipient not found.");
-        }
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        PrivateChatMessage privateMessage = new PrivateChatMessage(senderName, recipientName, message.message(), timestamp);
-        System.out.println("Sending to " + recipientName + " and " + senderName);
-        messagingTemplate.convertAndSendToUser(recipientName, "/queue/messages", privateMessage);
-        messagingTemplate.convertAndSendToUser(senderName, "/queue/messages", privateMessage);
+        messagingTemplate.convertAndSendToUser(
+                message.recipient(),
+                "/queue/messages",
+                message
+        );
     }
 
 }
