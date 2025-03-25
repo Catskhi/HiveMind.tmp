@@ -1,13 +1,12 @@
 'use client'
 
 import { Client, Message } from "@stomp/stompjs"
-import { createContext, useContext, useEffect, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useAuth } from "../auth/AuthProvider"
 
 interface ChatContextType {
     messages: MessageType[]
     sendMessage: (content: string) => void
-    sendPrivateMessage: (content: string) => void
     setRecipientName: (name: string) => void
     recipientName: string
     isConnected: boolean
@@ -24,64 +23,82 @@ const ChatContext = createContext<ChatContextType | null>(null);
 export function ChatProvider({ children }: {children: React.ReactNode}) {
     const baseWebsocketUrl: string = process.env.NEXT_PUBLIC_BACKEND_BASE_WEBSOCKET_URL as string
     const { userData } = useAuth()
-    const [client, setClient] = useState<Client | null>(null)
+    const clientRef = useRef<Client | null>(null);
+    const subscriptionsRef = useRef<Array<{ unsubscribe: () => void }>>([])
     const [messages, setMessages] = useState<MessageType[]>([])
     const [isConnected, setIsConnected] = useState<boolean>(false)
     const [recipientName, setRecipientName] = useState<string>("")
-    const [recipientUrl, setRecipientUrl] = useState<string>("")
+    const [isGlobalChat, setIsGlobalChat] = useState<boolean>(true)
+    
+    const handleMessage = useCallback((message: Message) => {
+        const messageData: MessageType = JSON.parse(message.body)
+        setMessages(prev => [...prev, {
+            username: messageData.username,
+            message: messageData.message,
+            timestamp: messageData.timestamp
+        }])
+    })
+
+    const setupSubscriptions = useCallback((client: Client) => {
+        if (!userData?.name) return
+
+        subscriptionsRef.current.forEach(sub => sub.unsubscribe)
+        subscriptionsRef.current = []
+
+        const globalSub = client.subscribe("/topic/globalChat", handleMessage)
+        subscriptionsRef.current.push(globalSub)
+
+        const privateSub = client.subscribe(
+            '/user/queue/messages',
+            (message: Message) => {
+                console.log('Private message:', JSON.parse(message.body))
+            }
+        )
+        subscriptionsRef.current.push(privateSub)
+    }, [userData])
 
     useEffect(() => {
+        if (!userData?.name) return
+
         const client = new Client({
             brokerURL: baseWebsocketUrl,
             reconnectDelay: 5000,
             onConnect: () => {
-                setRecipientUrl("/app/globalChat");
-                setIsConnected(true);
-                client.subscribe(`/user/${userData!.name}/queue/messages`, (message: Message) => {
-                    console.log("================= PRIVATE MESSAGE ===========")
-                    console.log(JSON.parse(message.body))
-                })
-                client.subscribe("/topic/globalChat", (message: Message) => {
-                    const messageData: MessageType = JSON.parse(message.body)
-                    console.log(JSON.parse(message.body))
-                    setMessages(prev => [...prev, {
-                        username: messageData.username,
-                        message: messageData.message,
-                        timestamp: messageData.message
-                    }])
-                })
+                setIsConnected(true)
+                setupSubscriptions(client)
             },
             onDisconnect: () => setIsConnected(false)
         })
-
-        if (userData) {
-            client.activate()
-            setClient(client)
-        }
+        
+        clientRef.current = client
+        client.activate()
 
         return () => {
             client.deactivate()
+            subscriptionsRef.current = []
         }
-    }, [userData])
+    }, [userData, baseWebsocketUrl, setupSubscriptions])
 
-    const sendPrivateMessage = (content: string) => {
-        if (client && isConnected) {
-            client.publish({
-                destination: "/app/privateMessage",
+
+    const sendMessage = (content: string) => {
+        if (!clientRef.current || !isConnected) return;
+
+        const destination: string = isGlobalChat
+        ? '/app/globalChat'
+        : '/app/privateMessage'
+
+        if (isGlobalChat) {
+            clientRef.current.publish({
+                destination: destination,
+                body: content
+            })
+        } else {
+            clientRef.current.publish({
+                destination: destination,
                 body: JSON.stringify({
                     recipient: recipientName,
                     message: content
                 })
-            })
-        }
-        
-    }
-
-    const sendMessage = (content: string) => {
-        if (client && isConnected) {
-            client.publish({
-                destination: '/app/globalChat',
-                body: content,
             })
         }
     }
@@ -91,7 +108,6 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         value={{
             messages,
             sendMessage,
-            sendPrivateMessage,
             isConnected,
             recipientName,
             setRecipientName
