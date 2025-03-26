@@ -92,7 +92,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
                 }
             })
         }
-    }, [])
+    }, [recipientName, userName])
 
     const setupSubscriptions = useCallback((client: Client) => {
         if (!userName) return
@@ -116,7 +116,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
             onConnect: () => {
                 setIsConnected(true)
                 setupSubscriptions(client)
-                changeChat(true)
+                if (isGlobalChat) changeChat(true);
             },
             onDisconnect: () => setIsConnected(false)
         })
@@ -131,7 +131,6 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
     }, [userName, baseWebsocketUrl, setupSubscriptions])
 
     const changeChat = (isGlobal: boolean, chatRecipientName?: string) => {
-        setIsGlobalChat(isGlobal)
         if (isGlobal) {
             setIsGlobalChat(true);
             setChatName('Global Chat')
@@ -140,8 +139,10 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         }
         try {
             if (!chatRecipientName) throw new Error("Recipient name is mandatory on non global chats.");
+            setIsGlobalChat(false);
             setChatName(chatRecipientName);
             setRecipientName(chatRecipientName);
+            console.log(`Chat changed to: ${chatRecipientName}`);
         } catch (error) {
             console.log(`An error occurred: ${error}`)
         }
