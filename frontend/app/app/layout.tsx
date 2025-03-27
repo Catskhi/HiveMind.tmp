@@ -4,6 +4,7 @@ import { toshibaSatFont } from "../styles/font";
 import ChatHeader from "@/components/app/ui/ChatHeader";
 import ContactsSidebar from "@/components/app/ContactsSidebar";
 import AuthProvider from "@/components/app/auth/AuthProvider";
+import { ChatProvider } from "@/components/app/chat/ChatProvider";
 
 export const metadata: Metadata = {
   title:"Hivemind",
@@ -23,8 +24,10 @@ export default function RootLayout({
           <div className="w-full h-full flex">
             <div className="flex-1 flex w-full min-h-0">
               <AuthProvider>
-                <ContactsSidebar className="min-h-0" />
-                {children}
+                <ChatProvider>
+                  <ContactsSidebar className="min-h-0" />
+                  {children}
+                </ChatProvider>
               </AuthProvider>
             </div>
           </div>
