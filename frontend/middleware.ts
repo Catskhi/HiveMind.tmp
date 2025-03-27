@@ -11,12 +11,15 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-        await fetch(`${baseUrl}/auth/verify`, {
+        const response = await fetch(`${baseUrl}/auth/verify`, {
             headers: { "Cookie": `JWT_TOKEN=${jwt_cookie}` },
         }); 
+        if (!response.ok) {
+            throw new Error(`Authentication failed with status: ${response.status}`)
+        }
         return NextResponse.next()
     } catch (error) {
-        let redirectPath = "/"
+        let redirectPath = "/login"
         if (error.status === 403) redirectPath = "/login"
         if (error.code === "ERR_NETWORK") redirectPath = "/demo"
 
