@@ -21,8 +21,10 @@ export default function Register() {
         setErrorMessage("")
         const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
         try {
-            const response = await axios.post(baseUrl + '/auth/register', {name, email, password})
-            sessionStorage.setItem("token", response.data.token)
+            const response = await axios.post(baseUrl + '/auth/register', 
+                {name, email, password},
+                {withCredentials: true})
+            sessionStorage.setItem("privateKey", response.data.privateKey)
             router.push('/app')
         } catch (error) {
             if (error.response.data.name) {
