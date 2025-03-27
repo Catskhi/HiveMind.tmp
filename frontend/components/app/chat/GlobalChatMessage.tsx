@@ -6,7 +6,7 @@ interface Props {
     timestamp: string
 }
 
-export default function ChatMessage({username, message, timestamp}: Props) {
+export default function GlobalChatMessage({username, message, timestamp}: Props) {
 
     const formatTimeStamp = (): string => {
         const date = new Date(timestamp)
