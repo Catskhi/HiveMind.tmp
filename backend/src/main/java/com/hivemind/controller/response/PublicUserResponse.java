@@ -1,4 +1,7 @@
 package com.hivemind.controller.response;
 
-public record PublicUserResponse() {
+import lombok.Builder;
+
+@Builder
+public record PublicUserResponse(String name, String publicKey) {
 }
