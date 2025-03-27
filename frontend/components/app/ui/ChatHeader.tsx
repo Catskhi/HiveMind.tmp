@@ -20,7 +20,7 @@ export default function ChatHeader() {
             <div className="px-4">
                 <Link href={'/app/find'}>
                     <TextButton>
-                        [ <TextGlitchEffect text="Find" duration={75} interval={45} /> ]
+                        [ <TextGlitchEffect text="Find People" duration={75} interval={30} /> ]
                     </TextButton>
                 </Link>
                 { " │ " }
