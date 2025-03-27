@@ -1,3 +1,11 @@
 package com.hivemind.controller.response;
 
-public record PrivateMessageRequest(String recipient, String message) {}
+public record PrivateMessageResponse(
+        String sender,
+        String encryptedKeySender,
+        String recipient,
+        String encryptedKeyRecipient,
+        String iv,
+        String encryptedMessage,
+        String timestamp
+) {}
