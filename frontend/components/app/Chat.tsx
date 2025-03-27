@@ -1,6 +1,5 @@
 import ChatInput from "./chat/ChatInput";
 import { ChatMessages } from "./chat/ChatMessages";
-import { ChatProvider } from "./chat/ChatProvider";
 import ChatTemplate from "./chat/ChatTemplate";
 import { cookies } from "next/headers";
 
@@ -16,13 +15,11 @@ export default async function ChatPage() {
     }).then(res => res.json());
   
     return (
-        <ChatProvider>
-            <ChatTemplate>
-              <div className="flex flex-col flex-1 h-full">
-                  <ChatMessages />
-                  <ChatInput username={userData.name} />
-              </div>
-            </ChatTemplate>
-        </ChatProvider>
+      <ChatTemplate>
+        <div className="flex flex-col flex-1 h-full">
+            <ChatMessages />
+            <ChatInput username={userData.name} />
+        </div>
+      </ChatTemplate>
     );
   }
