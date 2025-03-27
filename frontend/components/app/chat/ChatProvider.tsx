@@ -3,18 +3,24 @@
 import { Client, Message } from "@stomp/stompjs"
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react"
 import { useAuth } from "../auth/AuthProvider"
+import { decryptMessage, encryptMessage } from "@/utils/cryptoutils"
 
 interface ChatContextType {
     globalMessages: GlobalMessageType[]
     privateMessages: PrivateMessageType[]
     sendMessage: (content: string) => void
-    setRecipientName: (name: string) => void
-    recipientName: string
+    recipient:RecipientType
+    setRecipient: (recipient: RecipientType) => void
     isConnected: boolean
-    changeChat: (isGlobal: boolean, chatRecipientName?: string) => void
+    changeChat: (isGlobal: boolean, chatRecipient: RecipientType) => void
     chatName: string
     isGlobalChat: boolean
     unreadMessages: MessageNotification[]
+}
+
+interface RecipientType {
+    name: string
+    publicKey: string
 }
 
 interface GlobalMessageType {
@@ -26,8 +32,12 @@ interface GlobalMessageType {
 interface PrivateMessageType {
     sender: string
     recipient: string
-    message: string
+    encryptedMessage: string
+    encryptedKeySender: string
+    encryptedKeyRecipient: string
+    iv: string
     timestamp: string
+    message?: string
 }
 
 interface MessageNotification {
@@ -47,7 +57,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
     const [privateMessages, setPrivateMessages] = useState<PrivateMessageType[]>([])
     const [unreadMessages, setUnreadMessages] = useState<MessageNotification[]>([])
     const [isConnected, setIsConnected] = useState<boolean>(false)
-    const [recipientName, setRecipientName] = useState<string>("")
+    const [recipient, setRecipient] = useState<RecipientType | null>(null)
     const [isGlobalChat, setIsGlobalChat] = useState<boolean>(true)
     const [chatName, setChatName] = useState<string>("");
     
@@ -61,22 +71,34 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         return
     }, [])
 
-    const handlePrivateMessages = useCallback((message: Message) => {
+    const handlePrivateMessages = useCallback(async (message: Message) => {
         const messageData: PrivateMessageType = JSON.parse(message.body)
         console.log('New private message')
         console.log(messageData)
-        if (messageData.sender === recipientName) {
+        console.log(`RECIPIENT: ${recipient?.name}`)
+
+        const decryptionKey = messageData.sender === userName ? messageData.encryptedKeySender : messageData.encryptedKeyRecipient;
+        const privateKey = sessionStorage.getItem('privateKey')
+        if (!privateKey) throw new Error("")
+
+        const decryptedMessage = await decryptMessage(
+            messageData.encryptedMessage,
+            decryptionKey,
+            messageData.iv,
+            privateKey
+        )
+
+        if (messageData.sender === recipient?.name) {
             setPrivateMessages(prev => [...prev, {
-                sender: messageData.sender,
-                recipient: messageData.recipient,
-                message: messageData.message,
-                timestamp: messageData.timestamp
+                ...messageData,
+                message: decryptedMessage
             }])
         } else {
-            console.log(messageData)
-            console.log(userName)
             if (messageData.sender == userData?.name) {
-                console.log('HIII')
+                setPrivateMessages(prev => [...prev, {
+                    ...messageData,
+                    message: decryptedMessage
+                }])
                 return
             }
             setUnreadMessages(prev => {
@@ -92,7 +114,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
                 }
             })
         }
-    }, [recipientName, userName])
+    }, [recipient, userName])
 
     const setupSubscriptions = useCallback((client: Client) => {
         if (!userName) return
@@ -130,26 +152,26 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         }
     }, [userName, baseWebsocketUrl, setupSubscriptions])
 
-    const changeChat = (isGlobal: boolean, chatRecipientName?: string) => {
+    const changeChat = (isGlobal: boolean, chatRecipient?: RecipientType) => {
         if (isGlobal) {
             setIsGlobalChat(true);
             setChatName('Global Chat')
-            setRecipientName('')
+            setRecipient(null)
             return
         }
         try {
-            if (!chatRecipientName) throw new Error("Recipient name is mandatory on non global chats.");
+            if (!chatRecipient) throw new Error("Recipient name is mandatory on non global chats.");
             setIsGlobalChat(false);
-            setChatName(chatRecipientName);
-            setRecipientName(chatRecipientName);
-            console.log(`Chat changed to: ${chatRecipientName}`);
+            setChatName(chatRecipient.name);
+            setRecipient(chatRecipient);
+            console.log(`Chat changed to: ${chatRecipient.name}`);
         } catch (error) {
             console.log(`An error occurred: ${error}`)
         }
     }
 
 
-    const sendMessage = (content: string) => {
+    const sendMessage = async (content: string) => {
         if (!clientRef.current || !isConnected) return;
 
         const destination: string = isGlobalChat
@@ -162,11 +184,17 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
                 body: content
             })
         } else {
+
+            const { encryptedMessage, encryptedKeySender, encryptedKeyRecipient, iv } = await encryptMessage(content, userData!.publicKey, recipient!.publicKey)
+
             clientRef.current.publish({
                 destination: destination,
                 body: JSON.stringify({
-                    recipient: recipientName,
-                    message: content
+                    recipient: recipient?.name,
+                    encryptedKeySender,
+                    encryptedKeyRecipient,
+                    encryptedMessage,
+                    iv
                 })
             })
         }
@@ -179,8 +207,8 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
             privateMessages,
             sendMessage,
             isConnected,
-            recipientName,
-            setRecipientName,
+            recipient,
+            setRecipient,
             changeChat,
             chatName,
             isGlobalChat,
