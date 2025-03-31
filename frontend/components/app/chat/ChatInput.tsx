@@ -27,7 +27,7 @@ export default function ChatInput({ username }: Props) {
     }
 
     return (
-        <div className="p-4 flex items-center">
+        <div className="p-4 flex items-center h-16 max-h-16">
             Is connected: {isConnected ? ' true ' : ' false '}
             ({username}@hivemind.tmp) <span className="mx-2">$</span> 
             <FormTextInput 
