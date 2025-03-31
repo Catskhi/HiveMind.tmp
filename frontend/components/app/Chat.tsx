@@ -16,10 +16,12 @@ export default async function ChatPage() {
   
     return (
       <ChatTemplate>
-        <div className="flex flex-col flex-1 h-full">
-            <ChatMessages />
-            <ChatInput username={userData.name} />
-        </div>
+          <div className="flex flex-col h-screen overflow-hidden">
+              <ChatMessages />
+              <div className="sticky bottom-0 bg-background border-t">
+                  <ChatInput username={userData.name} />
+              </div>
+          </div>
       </ChatTemplate>
-    );
+  );
   }
