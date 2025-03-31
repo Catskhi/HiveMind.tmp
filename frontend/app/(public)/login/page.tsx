@@ -24,7 +24,6 @@ export default function LoginPage() {
                 { email, password },
                 { withCredentials: true }
             );
-            sessionStorage.setItem("token", response.data.token)
             router.push('/app')
         } catch (error) {
             console.log(error)
