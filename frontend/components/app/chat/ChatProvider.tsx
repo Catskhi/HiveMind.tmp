@@ -16,6 +16,8 @@ interface ChatContextType {
     chatName: string
     isGlobalChat: boolean
     unreadMessages: MessageNotification[]
+    fetchContacts: () => void
+    contacts: Contact[]
 }
 
 interface RecipientType {
@@ -45,9 +47,20 @@ interface MessageNotification {
     count: number
 }
 
+interface Contact {
+    contact: {
+        name: string
+        publicKey: string
+    }
+    lastMessageAt: string
+    // add isOnline later
+    unreadMessagesCount: number
+}
+
 const ChatContext = createContext<ChatContextType | null>(null);
 
 export function ChatProvider({ children }: {children: React.ReactNode}) {
+    const baseBackendUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
     const baseWebsocketUrl: string = process.env.NEXT_PUBLIC_BACKEND_BASE_WEBSOCKET_URL as string
     const { userData } = useAuth()
     const userName = userData?.name
@@ -60,6 +73,46 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
     const [recipient, setRecipient] = useState<RecipientType | null>(null)
     const [isGlobalChat, setIsGlobalChat] = useState<boolean>(true)
     const [chatName, setChatName] = useState<string>("");
+    const [contacts, setContacts] = useState<Contact[]>([]);
+
+    const fetchContacts = useCallback(async () => {
+        try {
+            const response = await fetch(`${baseBackendUrl}/contacts`, {
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Failed to fetch contacts');
+            const data: Contact[] = await response.json();
+            setContacts(data);
+        } catch (error) {
+            console.error('Error fetching contacts:', error);
+        }
+    }, [baseBackendUrl]);
+
+    const fetchPrivateMessages = useCallback(async (recipientName: string) => {
+        setPrivateMessages([]);
+        try {
+            const response = await fetch(`${baseBackendUrl}/contacts/${recipientName}/messages`, {
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Failed to fetch contacts');
+            const data: PrivateMessageType[] = await response.json();
+            const decryptedMessages = await Promise.all(
+                data.map(async (msg) => {
+                    try {
+                        const decryptionKey = msg.sender === userName ? msg.encryptedKeySender : msg.encryptedKeyRecipient;
+                        const privateKey = sessionStorage.getItem('privateKey')
+                        const decryptedMessage = await decryptMessage(msg.encryptedMessage, decryptionKey, msg.iv, privateKey);
+                        return { ...msg, message: decryptedMessage };
+                    } catch (error) {
+                        console.log(error)
+                    }
+                })
+            )
+            setPrivateMessages(decryptedMessages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }, [baseBackendUrl, recipient])
     
     const handleGlobalMessages = useCallback((message: Message) => {
         const messageData: GlobalMessageType = JSON.parse(message.body)
@@ -73,13 +126,9 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
 
     const handlePrivateMessages = useCallback(async (message: Message) => {
         const messageData: PrivateMessageType = JSON.parse(message.body)
-        console.log('New private message')
-        console.log(messageData)
-        console.log(`RECIPIENT: ${recipient?.name}`)
-
         const decryptionKey = messageData.sender === userName ? messageData.encryptedKeySender : messageData.encryptedKeyRecipient;
         const privateKey = sessionStorage.getItem('privateKey')
-        if (!privateKey) throw new Error("")
+        if (!privateKey) throw new Error("No private key found.")
 
         const decryptedMessage = await decryptMessage(
             messageData.encryptedMessage,
@@ -93,6 +142,11 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
                 ...messageData,
                 message: decryptedMessage
             }])
+            clientRef.current?.publish({
+                destination: '/app/chat/mark-read',
+                body: JSON.stringify({ contactUsername: messageData.sender })
+            });
+            fetchContacts()
         } else {
             if (messageData.sender == userData?.name) {
                 setPrivateMessages(prev => [...prev, {
@@ -101,18 +155,6 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
                 }])
                 return
             }
-            setUnreadMessages(prev => {
-                const existing = prev.find(msg => msg.sender === messageData.sender)
-                if (existing) {
-                    return prev.map(msg => 
-                        msg.sender === messageData.sender
-                        ? { ...msg, count: msg.count + 1 }
-                        : msg
-                    )
-                } else {
-                    return [...prev, { sender: messageData.sender, count: 1 }]
-                }
-            })
         }
     }, [recipient, userName])
 
@@ -127,6 +169,17 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
 
         const privateSub = client.subscribe('/user/queue/messages', handlePrivateMessages)
         subscriptionsRef.current.push(privateSub)
+
+        const contactsSub = client.subscribe('/user/queue/contacts', (message) => {
+            const updatedContact = JSON.parse(message.body);
+            setContacts(prevContacts => {
+                const filtered = prevContacts.filter(contact => 
+                    contact.contact.name !== updatedContact.contact.name
+                );
+                return [updatedContact, ...filtered];
+            })
+        })
+        subscriptionsRef.current.push(contactsSub);
     }, [userData, handleGlobalMessages, handlePrivateMessages])
 
     useEffect(() => {
@@ -161,9 +214,16 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         }
         try {
             if (!chatRecipient) throw new Error("Recipient name is mandatory on non global chats.");
+            if (!clientRef) throw new Error("No client provided.")
             setIsGlobalChat(false);
             setChatName(chatRecipient.name);
             setRecipient(chatRecipient);
+            fetchPrivateMessages(chatRecipient.name);
+            clientRef.current?.publish({
+                destination: '/app/chat/mark-read',
+                body: JSON.stringify({ contactUsername: chatRecipient.name })
+            });
+            fetchContacts()
             console.log(`Chat changed to: ${chatRecipient.name}`);
         } catch (error) {
             console.log(`An error occurred: ${error}`)
@@ -212,7 +272,9 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
             changeChat,
             chatName,
             isGlobalChat,
-            unreadMessages
+            unreadMessages,
+            fetchContacts,
+            contacts
         }}>
             {children}
         </ChatContext.Provider>
