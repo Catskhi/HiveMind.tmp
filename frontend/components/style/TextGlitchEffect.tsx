@@ -6,11 +6,12 @@ interface Props {
   text: string;
   duration?: number;
   interval?: number;
+  className?: string
 }
 
 const CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
 
-export default function TextGlitchEffect({ text, duration = 50, interval = 25 }: Props) {
+export default function TextGlitchEffect({ text, duration = 50, interval = 25, className }: Props) {
   const [displayText, setDisplayText] = useState<string>(text);
   const [isGlitching, setIsGlitching] = useState<boolean>(false);
 
@@ -52,6 +53,7 @@ export default function TextGlitchEffect({ text, duration = 50, interval = 25 }:
 
   return (
     <span
+      className={className}
       onMouseEnter={startGlitch}
     >
       {displayText}
