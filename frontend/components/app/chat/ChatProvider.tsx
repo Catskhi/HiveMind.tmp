@@ -12,7 +12,7 @@ interface ChatContextType {
     recipient:RecipientType
     setRecipient: (recipient: RecipientType) => void
     isConnected: boolean
-    changeChat: (isGlobal: boolean, chatRecipient: RecipientType) => void
+    changeChat: (isGlobal: boolean, chatRecipient?: RecipientType) => void
     chatName: string
     isGlobalChat: boolean
     unreadMessages: MessageNotification[]
