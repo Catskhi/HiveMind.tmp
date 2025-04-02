@@ -9,7 +9,7 @@ interface Props {
 
 
 export default function ChatInput({ username }: Props) {
-    const { sendMessage, isConnected } = useChat()
+    const { sendMessage } = useChat()
     const [inputValue, setInputValue] = useState<string>('')
 
     const handleSend = () => {
@@ -28,9 +28,14 @@ export default function ChatInput({ username }: Props) {
 
     return (
         <div className="p-4 flex items-center h-16 max-h-16">
-            Is connected: {isConnected ? ' true ' : ' false '}
-            ({username}@hivemind.tmp) <span className="mx-2">$</span> 
+            <div className="hidden md:flex">
+                <div className="truncate">
+                    (<span className="text-lime-300">{username}</span>
+                </div>
+                @hivemind.tmp) <span className="mx-2">$</span> 
+            </div>
             <FormTextInput 
+                placeholder="Your message here..."
                 onKeyDown={handleKeyDown}
                 className="w-1/2 flex-1"
                 value={inputValue}
