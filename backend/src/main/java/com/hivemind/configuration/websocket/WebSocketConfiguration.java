@@ -2,6 +2,7 @@ package com.hivemind.configuration.websocket;
 
 import com.hivemind.configuration.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -12,6 +13,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
+    @Value("${ALLOWED_ORIGINS}")
+    String allowedOrigins;
 
     private final TokenService tokenService;
     private final CustomHandshakeInterceptor customHandshakeInterceptor;
@@ -22,7 +25,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
         registry.addEndpoint("/ws")
                 .setHandshakeHandler(customHandshakeHandler)
                 .addInterceptors(customHandshakeInterceptor)
-                .setAllowedOrigins("http://localhost:3000");
+                .setAllowedOrigins(allowedOrigins.split(","));
     }
 
     @Override
