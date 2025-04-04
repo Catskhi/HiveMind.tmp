@@ -61,7 +61,7 @@ export default function setupPrivateKeyPage() {
             const blob = new Blob([privateKey], { type: 'text/plain' })
             const link = document.createElement('a')
             link.href = URL.createObjectURL(blob)
-            link.download = 'hivemind_private_key.txt'
+            link.download =  userData?.name + '_hivemind_private_key.txt'
             link.click()
         }
     }
