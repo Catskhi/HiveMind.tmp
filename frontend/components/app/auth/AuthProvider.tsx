@@ -7,7 +7,7 @@ interface AuthContextType {
     isLoading: boolean  // New loading state
 }
 
-interface UserData {
+export interface UserData {
     id: number
     name: string
     email: string

@@ -131,3 +131,34 @@ export const decryptMessage = async (
         throw error;
     }
 }
+
+export const verifyPrivateKey = async (
+    privateKeyBase64: string,
+    publicKeyBase64: string
+): Promise<boolean> => {
+    try {
+        const publicKey = await importPublicKey(publicKeyBase64);
+        const privateKey = await crypto.subtle.importKey(
+            'pkcs8',
+            base64ToArrayBuffer(privateKeyBase64),
+            { name: 'RSA-OAEP', hash: 'SHA-256' },
+            true,
+            ["decrypt"]
+        );
+        const testData = crypto.getRandomValues(new Uint8Array(190));
+        const encrypted = await crypto.subtle.encrypt(
+            { name: "RSA-OAEP" },
+            publicKey,
+            testData
+        );
+        const decrypted = await crypto.subtle.decrypt(
+            { name: "RSA-OAEP" },
+            privateKey,
+            encrypted
+        );
+        return arrayBufferToBase64(testData) === arrayBufferToBase64(decrypted);
+    } catch (error) {
+        console.error("Private key verification failed:", error);
+        return false;
+    }
+}

@@ -20,11 +20,11 @@ export const ChatMessages = () => {
 
     return (
         <div className="flex-1 flex flex-col h-full">
-            <div className="pt-4 pb-4 border-b border-[#9b9b9b] bg-[rgb(0,0,0,0.45)] sticky top-0 z-10">
-                {chatName} - {isGlobalChat ? 'Global Chat' : 'Private Chat'}
+            <div className="p-4 border-b border-[#9b9b9b] bg-black/45 sticky top-0 z-10">
+                {chatName} {isGlobalChat ? '' : '- Private Chat'}
             </div>
-            <div className="flex-1 overflow-y-auto p-4" ref={containerRef}>
-                <div className="flex flex-col gap-y-4 pb-16">
+            <div className="flex-1 overflow-y-auto p-4 mb-16" ref={containerRef}>
+                <div className="flex flex-col gap-y-4">
                     {isGlobalChat && messages.map((message, index) => (
                         <GlobalChatMessage 
                             key={index} 

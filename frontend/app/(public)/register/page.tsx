@@ -25,7 +25,7 @@ export default function Register() {
                 {name, email, password},
                 {withCredentials: true})
             sessionStorage.setItem("privateKey", response.data.privateKey)
-            router.push('/app')
+            router.push('/app/private-key')
         } catch (error) {
             if (error.response.data.name) {
                 setErrorMessage(error.response.data.name)

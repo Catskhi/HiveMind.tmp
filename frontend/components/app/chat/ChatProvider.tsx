@@ -12,7 +12,7 @@ interface ChatContextType {
     recipient:RecipientType
     setRecipient: (recipient: RecipientType) => void
     isConnected: boolean
-    changeChat: (isGlobal: boolean, chatRecipient: RecipientType) => void
+    changeChat: (isGlobal: boolean, chatRecipient?: RecipientType) => void
     chatName: string
     isGlobalChat: boolean
     unreadMessages: MessageNotification[]
@@ -94,7 +94,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
             const response = await fetch(`${baseBackendUrl}/contacts/${recipientName}/messages`, {
                 credentials: 'include'
             });
-            if (!response.ok) throw new Error('Failed to fetch contacts');
+            if (!response.ok) throw new Error('Failed to fetch messages');
             const data: PrivateMessageType[] = await response.json();
             const decryptedMessages = await Promise.all(
                 data.map(async (msg) => {
@@ -113,6 +113,20 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
             console.error('Error fetching messages:', error);
         }
     }, [baseBackendUrl, recipient])
+
+    const fetchGlobalMessages = useCallback(async () => {
+        setGlobalMessages([])
+        try {
+            const response = await fetch(`${baseBackendUrl}/globalChat/messages`, {
+                credentials: 'include'
+            })
+            if (!response.ok) throw new Error('Falied to fetch globalMessages');
+            const data = await response.json();
+            setGlobalMessages(data);
+        } catch (error) {
+            console.error('Error fetching global messages:', error);
+        }
+    })
     
     const handleGlobalMessages = useCallback((message: Message) => {
         const messageData: GlobalMessageType = JSON.parse(message.body)
@@ -207,6 +221,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
 
     const changeChat = (isGlobal: boolean, chatRecipient?: RecipientType) => {
         if (isGlobal) {
+            fetchGlobalMessages()
             setIsGlobalChat(true);
             setChatName('Global Chat')
             setRecipient(null)
@@ -241,7 +256,9 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         if (isGlobalChat) {
             clientRef.current.publish({
                 destination: destination,
-                body: content
+                body: JSON.stringify({
+                    message: content
+                })
             })
         } else {
 

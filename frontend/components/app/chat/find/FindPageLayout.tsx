@@ -5,6 +5,8 @@ import TextButton from "@/components/ui/TextButton";
 import { useState } from "react";
 import { useAuth } from "../../auth/AuthProvider";
 import { useRouter } from 'next/navigation'
+import ContactsSidebar from "../../ContactsSidebar";
+import { useApp } from "../../AppProvider";
 
 interface foundUserType {
     username: string
@@ -12,10 +14,11 @@ interface foundUserType {
 }
 
 export default function FindPageLayout() {
+    const { isContactListHidden } = useApp()
+    const { userData } = useAuth()
     const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
     const router = useRouter()
     const { changeChat } = useChat()
-    const { userData } = useAuth()
     const [username, setUsername] = useState<string>('')
     const [error, setError] = useState<string>('')
     const [foundUser, setFoundUser] = useState<foundUserType | null>(null)
@@ -60,6 +63,8 @@ export default function FindPageLayout() {
     }
 
     return (
+        <div className="flex-1 flex w-full min-h-0">
+        <ContactsSidebar className={`min-h-0 lg:block ${isContactListHidden ? 'hidden' : 'block'}`} />
         <div className="p-4 w-full">
             <div className="flex flex-col min-w-0 w-full space-y-3 ">
                 <h1 className="text-lg">Find Page</h1>
@@ -115,6 +120,7 @@ export default function FindPageLayout() {
                     </div>
                 )}
             </div>
+        </div>
         </div>
     )
 }

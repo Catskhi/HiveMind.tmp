@@ -1,7 +1,6 @@
-import ChatInput from "./chat/ChatInput";
-import { ChatMessages } from "./chat/ChatMessages";
 import ChatTemplate from "./chat/ChatTemplate";
 import { cookies } from "next/headers";
+import { toshibaSatFont } from "@/app/styles/font";
 
 export default async function ChatPage() {
     const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
@@ -15,13 +14,10 @@ export default async function ChatPage() {
     }).then(res => res.json());
   
     return (
-      <ChatTemplate>
-          <div className="flex flex-col h-screen overflow-hidden">
-              <ChatMessages />
-              <div className="sticky bottom-0 bg-background border-t">
-                  <ChatInput username={userData.name} />
-              </div>
-          </div>
-      </ChatTemplate>
+      <main className={toshibaSatFont.className + ' flex-1 min-h-0'}>
+        <div className="w-full h-full flex">
+          <ChatTemplate userData={userData}  />
+        </div>
+      </main>
   );
-  }
+}

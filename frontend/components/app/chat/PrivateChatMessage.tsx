@@ -21,7 +21,7 @@ export default function PrivateChatMessage({sender, recipient, message, timestam
     }
  
     return (
-        <div className={ibmEgaFont.className}>
+        <div className={`${ibmEgaFont.className} break-all max-w-full overflow-hidden`}>
             <span className="text-cyan-400 text-sm">[{formatTimeStamp()}] </span>
             <span className="text-lime-300">@{sender} </span> <br/>
             <span className="select-none">{'> '}</span><span className="text-white">{message}</span>
