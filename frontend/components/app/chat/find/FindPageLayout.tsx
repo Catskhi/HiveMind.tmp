@@ -15,10 +15,10 @@ interface foundUserType {
 
 export default function FindPageLayout() {
     const { isContactListHidden } = useApp()
+    const { userData } = useAuth()
     const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
     const router = useRouter()
     const { changeChat } = useChat()
-    const { userData } = useAuth()
     const [username, setUsername] = useState<string>('')
     const [error, setError] = useState<string>('')
     const [foundUser, setFoundUser] = useState<foundUserType | null>(null)
