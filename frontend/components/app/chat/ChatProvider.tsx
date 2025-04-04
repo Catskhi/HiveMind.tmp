@@ -221,6 +221,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
 
     const changeChat = (isGlobal: boolean, chatRecipient?: RecipientType) => {
         if (isGlobal) {
+            fetchGlobalMessages()
             setIsGlobalChat(true);
             setChatName('Global Chat')
             setRecipient(null)
