@@ -35,13 +35,15 @@ export default function ChatInput({ username }: Props) {
                 @hivemind.tmp) <span className="mx-2">$</span> 
             </div>
             <FormTextInput 
+                maxLength={500}
                 placeholder="Your message here..."
                 onKeyDown={handleKeyDown}
                 className="w-1/2 flex-1"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
             />
-            <button className="px-2 ml-2 self-center"
+            <button className="px-2 ml-2 self-center cursor-pointer hover:text-[#C0C0C0] disabled:text-[#7070disabled70]"
+                disabled={inputValue.length <= 500 ? false : true}
                 onClick={handleSend}
             >
                 Send
