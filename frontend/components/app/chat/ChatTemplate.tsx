@@ -18,7 +18,7 @@ export default function ChatTemplate({userData}: Props) {
         <div className="flex flex-col flex-1 h-full">
             <div className="flex flex-col h-screen overflow-hidden">
                 <ChatMessages />
-                <div className="sticky bottom-0 bg-black/45 border-t">
+                <div className="sticky bottom-0 bg-black/45 border-t border-[#9b9b9b]">
                     <ChatInput username={userData.name} />
                 </div>
             </div>
