@@ -3,7 +3,6 @@
 import BlockedButton from "@/components/BlockedButton";
 import FormTextInput from "@/components/forms/FormTextInput";
 import TextGlitchEffect from "@/components/style/TextGlitchEffect";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,6 +23,9 @@ export default function Register() {
         try {
             const response = await fetch(baseUrl + "/auth/register", {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 credentials: "include",
                 body: JSON.stringify({ name, email, password })
             });
