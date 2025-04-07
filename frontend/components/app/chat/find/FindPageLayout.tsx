@@ -100,10 +100,7 @@ export default function FindPageLayout() {
                                 </span>
                             </p>
                         </div>
-                        <div className="my-4">
-                            <p className="">Status: <span className="text-green-500">Connected</span></p>
-                        </div>
-                        <div>
+                        <div className="mt-4">
                             <TextButton
                                 onClick={startChatWithUser}
                             >

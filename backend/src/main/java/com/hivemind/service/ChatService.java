@@ -49,7 +49,7 @@ public class ChatService {
     }
 
     public List<GlobalMessage> getGlobalConversationHistory() {
-        Pageable pageable = PageRequest.of(0, 50, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = PageRequest.of(0, 50, Sort.by(Sort.Direction.ASC, "createdAt"));
         return globalMessageRepository.findAll(pageable).getContent();
     }
 
