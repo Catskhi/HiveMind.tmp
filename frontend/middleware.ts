@@ -14,14 +14,20 @@ export async function middleware(request: NextRequest) {
         const response = await fetch(`${baseUrl}/auth/verify`, {
             headers: { "Cookie": `JWT_TOKEN=${jwt_cookie}` },
         }); 
+        if (response.status === 403) {
+            const redirectResponse = NextResponse.redirect(new URL("/login", request.url))
+            redirectResponse.cookies.delete("JWT_TOKEN")
+            return redirectResponse
+        }
         if (!response.ok) {
             throw new Error(`Authentication failed with status: ${response.status}`)
         }
         return NextResponse.next()
     } catch (error) {
         let redirectPath = "/login"
-        if (error.status === 403) redirectPath = "/login"
-        if (error.code === "ERR_NETWORK") redirectPath = "/demo"
+        if (error instanceof TypeError) {
+            redirectPath = "/demo"
+        }
 
         const response = NextResponse.redirect(new URL(redirectPath, request.url))
         response.cookies.delete("JWT_TOKEN")

@@ -3,7 +3,6 @@
 import BlockedButton from "@/components/BlockedButton";
 import FormTextInput from "@/components/forms/FormTextInput";
 import TextGlitchEffect from "@/components/style/TextGlitchEffect";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,30 +15,38 @@ export default function LoginPage() {
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setErrorMessage("")
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
+        e.preventDefault();
+        setErrorMessage("");
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+
         try {
-            const response = await axios.post(baseUrl + "/auth/login",
-                { email, password },
-                { withCredentials: true }
-            );
-            router.push('/app')
-        } catch (error) {
-            console.log(error)
-            if (error.response.data.email) {
-                console.log(error.response.data.email)
-                setErrorMessage(error.response.data.email)
-                return
+            const response = await fetch(baseUrl + "/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({ email, password })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                if (data.email) {
+                    setErrorMessage(data.email);
+                    return;
+                }
+                if (data.password) {
+                    setErrorMessage(data.password);
+                    return;
+                }
+                setErrorMessage(data.message || "Login failed");
+                return;
             }
-            if (error.response.data.password) {
-                console.log(error.response.data.password)
-                setErrorMessage(error.response.data.password)
-                return
-            }
-            setErrorMessage(error.response.data.message)
+            router.push('/app');
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            setErrorMessage("Something went wrong. Please try again.");
         }
-    }
+    };
 
     return (
         <div className="lg:mt-10 mt-5 flex justify-center text-xs lg:text-base px-5">

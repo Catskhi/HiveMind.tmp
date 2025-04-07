@@ -25,19 +25,19 @@ export const ChatMessages = () => {
             </div>
             <div className="flex-1 overflow-y-auto p-4 mb-16" ref={containerRef}>
                 <div className="flex flex-col gap-y-4">
-                    {isGlobalChat && messages.map((message, index) => (
+                    {isGlobalChat && globalMessages.map((message, index) => (
                         <GlobalChatMessage 
                             key={index} 
                             username={message.username} 
                             message={message.message}
                             timestamp={message.timestamp} />
                     ))}
-                    {!isGlobalChat && messages.map((message, index) => (
+                    {!isGlobalChat && privateMessages.map((message, index) => (
                         <PrivateChatMessage 
                             key={index} 
                             sender={message.sender} 
                             recipient={message.recipient}
-                            message={message.message}
+                            message={message.message ?? ''}
                             timestamp={message.timestamp} />
                     ))}
                 </div>
