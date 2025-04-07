@@ -15,7 +15,7 @@ services:
     container_name: hivemind-db-production
     image: postgres:15
     env_file:
-      - ./backend/.env
+      - .env
     volumes:
       - hivemind-db-data:/var/lib/postgresql/data
     ports:
