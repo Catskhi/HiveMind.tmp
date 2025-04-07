@@ -243,6 +243,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         } catch (error) {
             console.log(`An error occurred: ${error}`)
         }
+        fetchContacts()
     }
 
 
