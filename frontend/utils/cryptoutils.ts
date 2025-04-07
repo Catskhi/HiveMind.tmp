@@ -156,7 +156,7 @@ export const verifyPrivateKey = async (
             privateKey,
             encrypted
         );
-        return arrayBufferToBase64(testData) === arrayBufferToBase64(decrypted);
+        return arrayBufferToBase64(testData.buffer) === arrayBufferToBase64(decrypted);
     } catch (error) {
         console.error("Private key verification failed:", error);
         return false;

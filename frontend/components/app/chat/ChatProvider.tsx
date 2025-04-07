@@ -9,7 +9,7 @@ interface ChatContextType {
     globalMessages: GlobalMessageType[]
     privateMessages: PrivateMessageType[]
     sendMessage: (content: string) => void
-    recipient:RecipientType
+    recipient: RecipientType | null
     setRecipient: (recipient: RecipientType) => void
     isConnected: boolean
     changeChat: (isGlobal: boolean, chatRecipient?: RecipientType) => void
@@ -25,13 +25,13 @@ interface RecipientType {
     publicKey: string
 }
 
-interface GlobalMessageType {
+export interface GlobalMessageType {
     username: string
     message: string
     timestamp: string
 }
 
-interface PrivateMessageType {
+export interface PrivateMessageType {
     sender: string
     recipient: string
     encryptedMessage: string
@@ -101,14 +101,14 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
                     try {
                         const decryptionKey = msg.sender === userName ? msg.encryptedKeySender : msg.encryptedKeyRecipient;
                         const privateKey = sessionStorage.getItem('privateKey')
-                        const decryptedMessage = await decryptMessage(msg.encryptedMessage, decryptionKey, msg.iv, privateKey);
+                        const decryptedMessage = await decryptMessage(msg.encryptedMessage, decryptionKey, msg.iv, privateKey ?? '');
                         return { ...msg, message: decryptedMessage };
                     } catch (error) {
                         console.log(error)
                     }
                 })
             )
-            setPrivateMessages(decryptedMessages);
+            setPrivateMessages(decryptedMessages as PrivateMessageType[]);
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
@@ -126,7 +126,7 @@ export function ChatProvider({ children }: {children: React.ReactNode}) {
         } catch (error) {
             console.error('Error fetching global messages:', error);
         }
-    })
+    }, [])
     
     const handleGlobalMessages = useCallback((message: Message) => {
         const messageData: GlobalMessageType = JSON.parse(message.body)

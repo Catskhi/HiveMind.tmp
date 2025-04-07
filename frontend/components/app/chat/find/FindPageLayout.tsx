@@ -45,12 +45,10 @@ export default function FindPageLayout() {
                 username: data.name,
                 publicKey: data.publicKey
             })
-        } catch (error) {
-            console.log(error)
-            if (error.message) {
-                console.log("An error occurred on message: " + error.message);
-                setError(error.message)
-            }
+        } catch (request_error) {
+            const error = request_error as Error;
+            console.log("An error occurred on message: " + error.message);
+            setError(error.message)
         }
         setSearchingForUser(false)
     };

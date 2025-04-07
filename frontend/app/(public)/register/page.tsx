@@ -17,31 +17,43 @@ export default function Register() {
     const router = useRouter()
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setErrorMessage("")
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL
+        e.preventDefault();
+        setErrorMessage("");
+        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+
         try {
-            const response = await axios.post(baseUrl + '/auth/register', 
-                {name, email, password},
-                {withCredentials: true})
-            sessionStorage.setItem("privateKey", response.data.privateKey)
-            router.push('/app/private-key')
-        } catch (error) {
-            if (error.response.data.name) {
-                setErrorMessage(error.response.data.name)
-                return
+            const response = await fetch(baseUrl + "/auth/register", {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify({ name, email, password })
+            });
+    
+            const data = await response.json();
+            if (!response.ok) {
+                if (data.name) {
+                    setErrorMessage(data.name);
+                    return;
+                }
+                if (data.email) {
+                    setErrorMessage(data.email);
+                    return;
+                }
+                if (data.password) {
+                    setErrorMessage(data.password);
+                    return;
+                }
+                setErrorMessage(data.message || "Registration failed");
+                return;
             }
-            if (error.response.data.email) {
-                setErrorMessage(error.response.data.email)
-                return
-            }
-            if (error.response.data.password) {
-                setErrorMessage(error.response.data.password)
-                return
-            }
-            setErrorMessage(error.response.data.message)
+
+            sessionStorage.setItem("privateKey", data.privateKey);
+            router.push('/app/private-key');
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            setErrorMessage("Something went wrong. Please try again.");
         }
-    }
+    };
+    
 
     return (
         <div className="lg:mt-10 mt-5 flex justify-center text-xs md:text-sm lg:text-base px-5">
