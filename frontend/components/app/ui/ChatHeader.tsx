@@ -8,12 +8,12 @@ import HeaderUserInfo from "./HeaderUserInfo";
 
 export default function ChatHeader() {
     return (
-        <nav className={toshibaSatFont.className + "  border-[#9b9b9b] bg-black h-24 flex items-center border-b select-none"}>
+        <nav className={toshibaSatFont.className + "  border-[#9b9b9b] bg-black h-16 md:h-24 flex items-center border-b select-none"}>
             <div className="flex items-center w-1/3 md:w-64
                  text-sm md:text-base lg:text-lg pl-5">
                 <ShowContactListButton className="mr-5" />
                 <span className="mr-2 select-none">
-                    <img src="/images/bee-pixel-sprite.svg" className='w-14' />
+                    <img src="/images/bee-pixel-sprite.svg" className='w-10 md:w-14' />
                 </span> 
                 <TextButton>
                 <Link href={"/app"} className="hidden md:block">
