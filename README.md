@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Catskhi/HiveMind.tmp/main/frontend/public/images/bee_pixel-export.svg" alt="Hivemind bee" width="250">
+</p>
 
 #  Hivemind.tmp
 
