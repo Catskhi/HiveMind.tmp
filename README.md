@@ -140,7 +140,9 @@ npm install
 
 2. Set up the following environment variables:
 ```env
+# Example: http://localhost:8080
 NEXT_PUBLIC_BACKEND_BASE_URL=
+# Example: ws://localhost:8080/ws
 NEXT_PUBLIC_BACKEND_BASE_WEBSOCKET_URL=
 ```
 
