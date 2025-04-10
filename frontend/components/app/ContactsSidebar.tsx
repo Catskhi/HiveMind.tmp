@@ -27,7 +27,7 @@ export default function ContactsSidebar({className}: Props)  {
     }
     
     return (
-        <div className={className + ' w-64 border-[#9b9b9b] absolute bg-black z-20 h-full md:static md:z-0 md:h-auto md:bg-black/45'}>
+        <div className={className + ' w-64 border-[#9b9b9b] absolute bg-black z-20 h-full md:static md:z-0 md:h-auto md:bg-black/45 border-r'}>
             <div className="flex flex-col px-2 mt-4 md:hidden">
                 <Link href={'/app/find'} onClick={hideSideBar}>
                     <TextButton>
