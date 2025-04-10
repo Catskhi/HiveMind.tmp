@@ -8,6 +8,20 @@ Hivemind.tmp is a secure real-time chat application built with Spring Boot for t
 
 It started as a personal project to help me learn and explore the capabilities of Spring Boot, a framework I’m currently studying. Over time, I saw a lot of potential in the idea, and it will likely continue to receive updates and improvements in the future.
 
+## 📚 Table of Contents
+
+- [📸 Screenshots](#-screenshots)
+  - [🔐 Login Page](#-login-page)
+  - [💬 Global Chat](#-global-chat)
+- [✨ Features](#-features)
+- [🧰 Tech Stack](#-tech-stack)
+- [🔒 Hybrid Cryptography Explanation](#-hybrid-cryptography-explanation)
+- [🚀 Getting Started](#-getting-started)
+  - [📦 Backend Setup](#-backend-setup)
+  - [🌐 Frontend Setup](#-frontend-setup)
+- [📦 Usage/Examples](#-usageexamples)
+- [🤝 Contributing](#-contributing)
+
 ## 📸 Screenshots
 
 ### 🔐 Login Page
@@ -15,6 +29,7 @@ It started as a personal project to help me learn and explore the capabilities o
 
 ### 💬 Global Chat
 ![screenshoot 1](https://github.com/Catskhi/HiveMind.tmp/blob/main/assets/screenshoot1.png)
+
 
 ## ✨ Features
 
