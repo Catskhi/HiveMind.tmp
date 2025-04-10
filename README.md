@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/Catskhi/HiveMind.tmp/main/frontend/public/images/bee_pixel-export.svg" alt="Hivemind bee" width="250">
 </p>
 
-#  Hivemind.tmp
+# 🐝 Hivemind.tmp
 
 Hivemind.tmp is a secure real-time chat application built with Spring Boot for the backend and Next.Js for the frontend. It ensures user privacy through end-to-end encryption, where each message is secured using the recipient's public key, making it readable only by the intended recipient.
 
@@ -10,20 +10,23 @@ It started as a personal project to help me learn and explore the capabilities o
 
 ## 📸 Screenshots
 
+### 🔐 Login Page
 ![screenshoot 2](https://github.com/Catskhi/HiveMind.tmp/blob/main/assets/screenshoot2.png)
+
+### 💬 Global Chat
 ![screenshoot 1](https://github.com/Catskhi/HiveMind.tmp/blob/main/assets/screenshoot1.png)
 
-## Features
+## ✨ Features
 
-- Real-time messaging using WebSockets
-- End-to-end encryption for all messages
-- User authentication and authorization
-- Global chat and private messaging (group chats coming soon).
-- Easy private key backup
-- Authentication using JWT
+- 🧠 Real-time messaging using WebSockets  
+- 🔐 End-to-end encryption for all messages  
+- 👤 User authentication and authorization  
+- 🌐 Global chat and private messaging (group chats coming soon)  
+- 🔑 Easy private key backup  
+- 🪪 Authentication using JWT  
 
 
-## Tech Stack
+## 🧰 Tech Stack
 
 **Client:**<br>
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
@@ -38,7 +41,7 @@ It started as a personal project to help me learn and explore the capabilities o
 
 **Deployment:**<br>
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-## 4. Hybrid Cryptography Explanation
+## 🔒 Hybrid Cryptography Explanation
 
 HiveMind.tmp uses hybrid cryptography to securely encrypt all messages exchanged between users.
 
@@ -66,7 +69,7 @@ The following image explains the flow:
 ![screenshoot 1](https://github.com/Catskhi/HiveMind.tmp/blob/main/assets/img/Black%20board.png)
 
 
-## 5 - Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -130,19 +133,19 @@ NEXT_PUBLIC_BACKEND_BASE_WEBSOCKET_URL=
 ```
 npm run build && npm run start
 ```
-## Usage/Examples
+## 📦 Usage/Examples
 
 Once the application is running, you can:
 
 1. Create an account and back-up your private key:
   - Create an account using your credentials.
-- Copy your private key or save it as a file on the private key page.
+  - Copy your private key or save it as a file on the private key page.
 2. **Send a Private Message:**
   - Log in with your credentials.
   - Select a user from the global chat list.
   - Type your message and hit send. The recipient will see it instantly!
 
-## Contributing
+## 🤝 Contributing
 
 I welcome contributions to HiveMind.tmp! To get started:
 
