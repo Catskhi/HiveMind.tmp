@@ -25,7 +25,7 @@ It started as a personal project to help me learn and explore the capabilities o
 ## 📸 Screenshots
 
 ### 🔐 Login Page
-![screenshoot 2](https://github.com/Catskhi/HiveMind.tmp/blob/main/assets/screenshoot2.png)
+[video 1](https://github.com/user-attachments/assets/b343fc61-808d-497f-a85c-208beb581422.mp4)
 
 ### 💬 Global Chat
 ![screenshoot 1](https://github.com/Catskhi/HiveMind.tmp/blob/main/assets/screenshoot1.png)
